@@ -1,0 +1,8 @@
+export const ADD_PROJECT = 'ADD_PROJECT'
+export type ADD_PROJECT = typeof ADD_PROJECT
+
+export const ADD_PROJECT_ITEM = 'ADD_PROJECT_ITEM'
+export type ADD_PROJECT_ITEM = typeof ADD_PROJECT_ITEM
+
+export const REMOVE_PROJECT = 'REMOVE_PROJECT'
+export type REMOVE_PROJECT = typeof REMOVE_PROJECT
