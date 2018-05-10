@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Project, ProjectItem } from '../domain/entities'
 import ProjectComponent from '../project/Project'
+import ProjectEditor from '../project/ProjectEditor'
 import * as UUID from 'uuid/v4'
 
 export interface StateProps {
@@ -17,10 +18,17 @@ export interface DispatchProps {
 interface Props extends StateProps, DispatchProps {
 }
 
-export class Projects extends React.Component<Props, {}> {
+interface State {
+    editingProject: Project | undefined
+}
+
+export class Projects extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
+        this.state = {
+            editingProject: undefined
+        }
     }
 
     handleAddProject(e: MouseEvent) {
@@ -45,6 +53,13 @@ export class Projects extends React.Component<Props, {}> {
         this.props.onRemoveProjectItem(project, item)
     }
 
+    handleEditProject(project: Project) {
+        console.log('handleEditProject')
+        this.setState({
+            editingProject: project
+        })
+    }
+
     handleWriteDailyReport(e: MouseEvent) {
 
     }
@@ -59,21 +74,30 @@ export class Projects extends React.Component<Props, {}> {
                     onAddProjectItem={this.handleAddProjectItem.bind(this)}
                     onRemoveProject={this.handleRemoveProject.bind(this)}
                     onRemoveProjectItem={this.handleRemoveProjectItem.bind(this)}
+                    onEditProject={this.handleEditProject.bind(this)}
                 />
             )
         })
         return (
-            <section>
-                <header>
-                    <h1>Projects</h1>
-                    <p>Project count: {projects.length}</p>
-                    <button onClick={this.handleAddProject.bind(this)}>Add Project…</button>
-                </header>
-                {projectsTag}
-                <footer>
-                    <button onClick={this.handleWriteDailyReport.bind(this)}>日報を書く</button>
-                </footer>
-            </section>
+            <div>
+                <section>
+                    <header>
+                        <h1>Projects</h1>
+                        <p>Project count: {projects.length}</p>
+                        <button onClick={this.handleAddProject.bind(this)}>Add Project…</button>
+                    </header>
+                    {projectsTag}
+                    <footer>
+                        <button onClick={this.handleWriteDailyReport.bind(this)}>日報を書く</button>
+                    </footer>
+                </section>
+                <ProjectEditor
+                    project={this.state.editingProject}
+                    onCompleteEdit={(project) => {
+                        console.log(`onCompleteEdit: ${project.name}`)
+                    }}
+                />
+            </div>
         )
     }
 }
