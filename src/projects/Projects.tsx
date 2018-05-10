@@ -9,8 +9,9 @@ export interface StateProps {
 
 export interface DispatchProps {
     onAddProject: (project: Project) => void
-    onAddProjectItem: (project: Project, item: ProjectItem) => void,
+    onAddProjectItem: (project: Project, item: ProjectItem, parent: ProjectItem | undefined) => void,
     onRemoveProject: (project: Project) => void,
+    onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -27,21 +28,25 @@ export class Projects extends React.Component<Props, {}> {
         const name = prompt("what's name?") || `No Name ${id}`
         this.props.onAddProject(new Project(
             id,
-            name // `Project (${id})`
+            name
         ))
     }
 
-    handleAddProjectItem(project: Project, item: ProjectItem) {
+    handleAddProjectItem(project: Project, item: ProjectItem, parent: ProjectItem | undefined) {
         console.log("create child!")
-        this.props.onAddProjectItem(project, item)
+        this.props.onAddProjectItem(project, item, parent)
     }
 
     handleRemoveProject(project: Project) {
         this.props.onRemoveProject(project)
     }
 
+    handleRemoveProjectItem(project: Project, item: ProjectItem) {
+        this.props.onRemoveProjectItem(project, item)
+    }
+
     handleWriteDailyReport(e: MouseEvent) {
-        
+
     }
 
     render() {
@@ -50,8 +55,10 @@ export class Projects extends React.Component<Props, {}> {
             return (
                 <ProjectComponent
                     project={project}
+                    key={project.id}
                     onAddProjectItem={this.handleAddProjectItem.bind(this)}
                     onRemoveProject={this.handleRemoveProject.bind(this)}
+                    onRemoveProjectItem={this.handleRemoveProjectItem.bind(this)}
                 />
             )
         })

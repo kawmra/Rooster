@@ -7,8 +7,9 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-    onAddProjectItem: (project: Project, item: ProjectItem) => void,
+    onAddProjectItem: (project: Project, item: ProjectItem, parent: ProjectItem | undefined) => void,
     onRemoveProject: (project: Project) => void,
+    onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -25,12 +26,47 @@ export default class extends React.Component<Props, {}> {
         const id = UUID()
         const name = prompt('item name?') || `Item ${id}`
         const item = new Task(id, name)
-        this.props.onAddProjectItem(project, item)
+        this.props.onAddProjectItem(project, item, undefined)
+    }
+
+    handleAddProjectSubItem(item: ProjectItem, e: MouseEvent) {
+        const { project } = this.props
+        const id = UUID()
+        const name = prompt('item name?') || `Item ${id}`
+        const subItem = new Task(id, name)
+        this.props.onAddProjectItem(project, subItem, item)
     }
 
     handleRemoveProject(e: MouseEvent) {
         const { project } = this.props
         this.props.onRemoveProject(project)
+    }
+
+    handleRemoveProjectItem(item: ProjectItem, e: MouseEvent) {
+        const { project } = this.props
+        this.props.onRemoveProjectItem(project, item)
+    }
+
+    createItemsTag(items: ProjectItem[]) {
+        if (items.length == 0) {
+            return undefined
+        }
+        const itemsTag = items.map((item: ProjectItem) => {
+            const tag: JSX.Element = (
+                <li key={item.id}>
+                    {item.name}
+                    <button onClick={this.handleAddProjectSubItem.bind(this, item)}>+</button>
+                    <button onClick={this.handleRemoveProjectItem.bind(this, item)}>-</button>
+                    {this.createItemsTag(item.children)}
+                </li>
+            )
+            return tag
+        })
+        return (
+            <ul>
+                {itemsTag}
+            </ul>
+        )
     }
 
     render() {
@@ -46,28 +82,8 @@ export default class extends React.Component<Props, {}> {
                         <button onClick={this.handleRemoveProject.bind(this)}>-</button>
                     </h1>
                 </header>
-                {createItemsTag(items)}
+                {this.createItemsTag(items)}
             </section>
         )
     }
-}
-
-function createItemsTag(items: ProjectItem[]) {
-    if (items.length == 0) {
-        return undefined
-    }
-    const itemsTag = items.map((item: ProjectItem) => {
-        const tag: JSX.Element = (
-            <li>
-                {item.name}
-                {createItemsTag(item.children)}
-            </li>
-        )
-        return tag
-    })
-    return (
-        <ul>
-            {itemsTag}
-        </ul>
-    )
 }

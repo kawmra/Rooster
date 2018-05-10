@@ -7,6 +7,7 @@ export interface AddProjectAction {
 }
 
 export interface AddProjectItemAction {
+    parentItem: ProjectItem | undefined
     item: ProjectItem
     project: Project
     type: constants.ADD_PROJECT_ITEM
@@ -17,7 +18,13 @@ export interface RemoveProjectAction {
     type: constants.REMOVE_PROJECT
 }
 
-export type ProjectAction = AddProjectAction | AddProjectItemAction | RemoveProjectAction
+export interface RemoveProjectItemAction {
+    item: ProjectItem
+    project: Project
+    type: constants.REMOVE_PROJECT_ITEM
+}
+
+export type ProjectAction = AddProjectAction | AddProjectItemAction | RemoveProjectAction | RemoveProjectItemAction
 
 export function addProject(project: Project): AddProjectAction {
     return {
@@ -26,8 +33,9 @@ export function addProject(project: Project): AddProjectAction {
     }
 }
 
-export function addProjectItem(project: Project, item: ProjectItem): AddProjectItemAction {
+export function addProjectItem(project: Project, item: ProjectItem, parent: ProjectItem | undefined): AddProjectItemAction {
     return {
+        parentItem: parent,
         item,
         project,
         type: constants.ADD_PROJECT_ITEM,
@@ -38,5 +46,13 @@ export function removeProject(project: Project): RemoveProjectAction {
     return {
         project,
         type: constants.REMOVE_PROJECT
+    }
+}
+
+export function removeProjectItem(project: Project, item: ProjectItem): RemoveProjectItemAction {
+    return {
+        project,
+        item,
+        type: constants.REMOVE_PROJECT_ITEM
     }
 }
