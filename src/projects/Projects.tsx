@@ -13,6 +13,7 @@ export interface DispatchProps {
     onAddProjectItem: (project: Project, item: ProjectItem, parent: ProjectItem | undefined) => void,
     onRemoveProject: (project: Project) => void,
     onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
+    onEditProject: (project: Project) => void,
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -60,6 +61,19 @@ export class Projects extends React.Component<Props, State> {
         })
     }
 
+    handleCancelEditProject(project: Project) {
+        this.setState({
+            editingProject: undefined
+        })
+    }
+
+    handleSaveEditProject(newProject: Project) {
+        this.props.onEditProject(newProject)
+        this.setState({
+            editingProject: undefined
+        })
+    }
+
     handleWriteDailyReport(e: MouseEvent) {
 
     }
@@ -78,6 +92,13 @@ export class Projects extends React.Component<Props, State> {
                 />
             )
         })
+        const { editingProject } = this.state
+        const projectEditor = editingProject !== undefined
+            ? <ProjectEditor
+                project={editingProject}
+                onSave={this.handleSaveEditProject.bind(this)}
+                onCancel={this.handleCancelEditProject.bind(this)}
+            /> : undefined
         return (
             <div>
                 <section>
@@ -91,12 +112,7 @@ export class Projects extends React.Component<Props, State> {
                         <button onClick={this.handleWriteDailyReport.bind(this)}>日報を書く</button>
                     </footer>
                 </section>
-                <ProjectEditor
-                    project={this.state.editingProject}
-                    onCompleteEdit={(project) => {
-                        console.log(`onCompleteEdit: ${project.name}`)
-                    }}
-                />
+                {projectEditor}
             </div>
         )
     }

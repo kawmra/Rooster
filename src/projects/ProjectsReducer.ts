@@ -1,16 +1,16 @@
 import { ProjectAction } from '../domain/actions'
 import { StoreState } from '../domain/stores'
 import { Project, ProjectItem } from '../domain/entities'
-import { ADD_PROJECT, ADD_PROJECT_ITEM, REMOVE_PROJECT, REMOVE_PROJECT_ITEM } from '../domain/constants'
+import * as constants from '../domain/constants'
 
 export function ProjectsReducer(state: StoreState, action: ProjectAction): StoreState {
   switch (action.type) {
-    case ADD_PROJECT: {
+    case constants.ADD_PROJECT: {
       const newProjects: Project[] = [...state.projects, action.project]
       console.log(newProjects)
       return { ...state, projects: newProjects };
     }
-    case ADD_PROJECT_ITEM: {
+    case constants.ADD_PROJECT_ITEM: {
       const targetProject = findProject(state.projects, action.project.id)
       if (targetProject === null) {
         console.log(`No such project '${action.project.id}' found.`)
@@ -31,13 +31,13 @@ export function ProjectsReducer(state: StoreState, action: ProjectAction): Store
       })
       return { ...state, projects: newProjects }
     }
-    case REMOVE_PROJECT: {
+    case constants.REMOVE_PROJECT: {
       const newProjects = state.projects.filter((project) => {
         return project.id !== action.project.id
       })
       return { ...state, projects: newProjects }
     }
-    case REMOVE_PROJECT_ITEM: {
+    case constants.REMOVE_PROJECT_ITEM: {
       const newItems = deepCopyExclude(action.project.items, action.item)
       const newProjects = state.projects.map((project) => {
         if (project.id !== action.project.id) {
@@ -48,6 +48,19 @@ export function ProjectsReducer(state: StoreState, action: ProjectAction): Store
       })
       return { ...state, projects: newProjects }
     }
+    case constants.EDIT_PROJECT:
+      console.log('EDIT_PROJECT')
+      const newProjects = state.projects.map((project) => {
+        if (project.id !== action.project.id) {
+          return project
+        } else {
+          return {
+            ...project,
+            name: action.project.name
+          }
+        }
+      })
+      return { ...state, projects: newProjects }
   }
   return state
 }

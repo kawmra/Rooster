@@ -24,7 +24,12 @@ export interface RemoveProjectItemAction {
     type: constants.REMOVE_PROJECT_ITEM
 }
 
-export type ProjectAction = AddProjectAction | AddProjectItemAction | RemoveProjectAction | RemoveProjectItemAction
+export interface EditProjectAction {
+    project: Project
+    type: constants.EDIT_PROJECT
+}
+
+export type ProjectAction = AddProjectAction | AddProjectItemAction | RemoveProjectAction | RemoveProjectItemAction | EditProjectAction
 
 export function addProject(project: Project): AddProjectAction {
     return {
@@ -54,5 +59,12 @@ export function removeProjectItem(project: Project, item: ProjectItem): RemovePr
         project,
         item,
         type: constants.REMOVE_PROJECT_ITEM
+    }
+}
+
+export function editProject(project: Project): EditProjectAction {
+    return {
+        project,
+        type: constants.EDIT_PROJECT
     }
 }
