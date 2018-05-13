@@ -22,6 +22,7 @@ interface Props extends StateProps, DispatchProps {
 
 interface State {
     editingProject: Project | undefined
+    creatingProject: Project | undefined
 }
 
 export class Projects extends React.Component<Props, State> {
@@ -29,17 +30,17 @@ export class Projects extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
-            editingProject: undefined
+            editingProject: undefined,
+            creatingProject: undefined,
         }
     }
 
     handleAddProject(e: MouseEvent) {
         const id = UUID()
-        const name = prompt("what's name?") || `No Name ${id}`
-        this.props.onAddProject(new Project(
-            id,
-            name
-        ))
+        const newProject = new Project(id, '')
+        this.setState({
+            creatingProject: newProject
+        })
     }
 
     handleAddProjectItem(project: Project, item: ProjectItem, parent: ProjectItem | undefined) {
@@ -75,6 +76,19 @@ export class Projects extends React.Component<Props, State> {
         })
     }
 
+    handleCancelCreatingProject(project: Project) {
+        this.setState({
+            creatingProject: undefined
+        })
+    }
+
+    handleSaveCreatingProject(newProject: Project) {
+        this.props.onAddProject(newProject)
+        this.setState({
+            creatingProject: undefined
+        })
+    }
+
     handleItemStateChanged(project: Project, newItem: ProjectItem) {
         this.props.onItemStateChanged(project, newItem)
     }
@@ -98,20 +112,27 @@ export class Projects extends React.Component<Props, State> {
                 />
             )
         })
-        const { editingProject } = this.state
-        const projectEditor = editingProject !== undefined
-            ? <ProjectEditor
+        const { editingProject, creatingProject } = this.state
+        let projectEditor = undefined
+        if (editingProject !== undefined) {
+            projectEditor = <ProjectEditor
                 project={editingProject}
                 onSave={this.handleSaveEditProject.bind(this)}
                 onCancel={this.handleCancelEditProject.bind(this)}
-            /> : undefined
+            />
+        } else if (creatingProject !== undefined) {
+            projectEditor = <ProjectEditor
+                project={creatingProject}
+                onSave={this.handleSaveCreatingProject.bind(this)}
+                onCancel={this.handleCancelCreatingProject.bind(this)}
+            />
+        }
         return (
             <div>
                 <section>
                     <header>
-                        <h1>Projects</h1>
-                        <p>Project count: {projects.length}</p>
-                        <button onClick={this.handleAddProject.bind(this)}>Add Project…</button>
+                        <h1>全てのタスク ({projects.length})</h1>
+                        <button onClick={this.handleAddProject.bind(this)}>プロジェクトを追加…</button>
                     </header>
                     {projectsTag}
                     <footer>

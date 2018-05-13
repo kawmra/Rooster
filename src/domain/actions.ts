@@ -26,7 +26,7 @@ export interface RemoveProjectItemAction {
 
 export interface EditProjectAction {
     project: Project
-    type: constants.EDIT_PROJECT
+    type: constants.UPDATE_PROJECT
 }
 
 export interface UpdateProjectItemAction {
@@ -76,7 +76,7 @@ export function removeProjectItem(project: Project, item: ProjectItem): RemovePr
 export function editProject(project: Project): EditProjectAction {
     return {
         project,
-        type: constants.EDIT_PROJECT
+        type: constants.UPDATE_PROJECT
     }
 }
 

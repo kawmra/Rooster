@@ -49,16 +49,13 @@ export function ProjectsReducer(state: StoreState, action: ProjectAction): Store
       })
       return { ...state, projects: newProjects }
     }
-    case constants.EDIT_PROJECT: {
-      console.log('EDIT_PROJECT')
+    case constants.UPDATE_PROJECT: {
+      console.log('UPDATE_PROJECT')
       const newProjects = state.projects.map((project) => {
         if (project.id !== action.project.id) {
           return project
         } else {
-          return {
-            ...project,
-            name: action.project.name
-          }
+          return action.project
         }
       })
       return { ...state, projects: newProjects }

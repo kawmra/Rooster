@@ -2,10 +2,10 @@ export class Project {
 
     readonly id: string
     readonly name: string
-    readonly honeyCode: string | null
+    readonly honeyCode: string | undefined
     readonly items: ProjectItem[]
 
-    constructor(id: string, name: string, honeyCode: string | null = null, items: ProjectItem[] = []) {
+    constructor(id: string, name: string, honeyCode: string | undefined = undefined, items: ProjectItem[] = []) {
         this.id = id
         this.name = name
         this.honeyCode = honeyCode
