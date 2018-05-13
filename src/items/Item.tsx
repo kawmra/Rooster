@@ -115,6 +115,7 @@ export default class extends React.Component<Props, State> {
                 type="checkbox"
                 checked={this.state.completed}
                 onChange={this.handleOnCheckChanged.bind(this)}
+                style={{ margin: '0 .6em 0 -1.7em' }}
             /> : undefined
         const { editingItem, creatingItem } = this.state
         let itemEditor = undefined
@@ -131,8 +132,11 @@ export default class extends React.Component<Props, State> {
                 onSave={this.handleSaveCreating.bind(this)}
             />
         }
+        const style = item.completed !== undefined
+            ? { listStyle: 'none' }
+            : undefined
         return (
-            <li key={item.id}>
+            <li key={item.id} style={style}>
                 {checkbox}
                 {item.name}
                 <button onClick={this.handleAddSubItem.bind(this)}>+</button>
