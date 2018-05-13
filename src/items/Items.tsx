@@ -4,8 +4,9 @@ import Item from './Item'
 
 interface Props {
     items: ProjectItem[]
-    onAddSubItem: (parent: ProjectItem) => void,
+    onAddSubItem: (parent: ProjectItem, item: ProjectItem) => void,
     onRemoveItem: (item: ProjectItem) => void,
+    onUpdateItem: (item: ProjectItem) => void,
     onCheckedChanged: (item: ProjectItem, completed: boolean) => void,
 }
 
@@ -15,12 +16,16 @@ export default class extends React.Component<Props, {}> {
         super(props)
     }
 
-    delegateAddSubItem(parent: ProjectItem) {
-        this.props.onAddSubItem(parent)
+    delegateAddSubItem(parent: ProjectItem, item: ProjectItem) {
+        this.props.onAddSubItem(parent, item)
     }
 
     delegateRemoveItem(item: ProjectItem) {
         this.props.onRemoveItem(item)
+    }
+
+    delegateUpdateItem(item: ProjectItem) {
+        this.props.onUpdateItem(item)
     }
 
     delegateCheckedChanged(item: ProjectItem, completed: boolean) {
@@ -38,6 +43,7 @@ export default class extends React.Component<Props, {}> {
                     item={item}
                     onAddSubItem={this.delegateAddSubItem.bind(this)}
                     onRemoveItem={this.delegateRemoveItem.bind(this)}
+                    onUpdateItem={this.delegateUpdateItem.bind(this)}
                     onCheckedChanged={this.delegateCheckedChanged.bind(this)}
                 />
             )

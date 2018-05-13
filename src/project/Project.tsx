@@ -12,7 +12,7 @@ export interface DispatchProps {
     onRemoveProject: (project: Project) => void,
     onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
     onEditProject: (project: Project) => void,
-    onItemStateChanged: (project: Project, newItem: ProjectItem) => void,
+    onUpdateProjectItem: (project: Project, newItem: ProjectItem) => void,
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -32,12 +32,9 @@ export default class extends React.Component<Props, {}> {
         this.props.onAddProjectItem(project, item, undefined)
     }
 
-    delegateAddSubItem(item: ProjectItem) {
+    delegateAddSubItem(parent: ProjectItem, item: ProjectItem) {
         const { project } = this.props
-        const id = UUID()
-        const name = prompt('item name?') || `Item ${id}`
-        const subItem = new ProjectItem(id, name, false)
-        this.props.onAddProjectItem(project, subItem, item)
+        this.props.onAddProjectItem(project, item, parent)
     }
 
     handleRemoveProject(e: MouseEvent) {
@@ -50,10 +47,15 @@ export default class extends React.Component<Props, {}> {
         this.props.onRemoveProjectItem(project, item)
     }
 
+    delegateUpdateItem(item: ProjectItem) {
+        const { project } = this.props
+        this.props.onUpdateProjectItem(project, item)
+    }
+
     delegateCheckedChanged(item: ProjectItem, completed: boolean) {
         const { project } = this.props
         const newItem = { ...item, completed }
-        this.props.onItemStateChanged(project, newItem)
+        this.props.onUpdateProjectItem(project, newItem)
     }
 
     handleEditProject(e: MouseEvent) {
@@ -79,6 +81,7 @@ export default class extends React.Component<Props, {}> {
                     items={items}
                     onAddSubItem={this.delegateAddSubItem.bind(this)}
                     onRemoveItem={this.delegateRemoveItem.bind(this)}
+                    onUpdateItem={this.delegateUpdateItem.bind(this)}
                     onCheckedChanged={this.delegateCheckedChanged.bind(this)}
                 />
             </section>

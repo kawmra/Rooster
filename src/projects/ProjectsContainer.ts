@@ -17,7 +17,7 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.ProjectAction>): D
         onRemoveProject: (project: Project) => dispatch(actions.removeProject(project)),
         onRemoveProjectItem: (project: Project, item: ProjectItem) => dispatch(actions.removeProjectItem(project, item)),
         onEditProject: (project: Project) => dispatch(actions.editProject(project)),
-        onItemStateChanged: (project: Project, newItem: ProjectItem) => dispatch(actions.updateProjectItem(project, newItem)),
+        onUpdateProjectItem: (project: Project, newItem: ProjectItem) => dispatch(actions.updateProjectItem(project, newItem)),
     }
 }
 
