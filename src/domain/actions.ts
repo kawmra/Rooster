@@ -29,7 +29,18 @@ export interface EditProjectAction {
     type: constants.EDIT_PROJECT
 }
 
-export type ProjectAction = AddProjectAction | AddProjectItemAction | RemoveProjectAction | RemoveProjectItemAction | EditProjectAction
+export interface UpdateProjectItemAction {
+    project: Project
+    newItem: ProjectItem
+    type: constants.UPDATE_PROJECT_ITEM
+}
+
+export type ProjectAction = AddProjectAction
+    | AddProjectItemAction
+    | RemoveProjectAction
+    | RemoveProjectItemAction
+    | EditProjectAction
+    | UpdateProjectItemAction
 
 export function addProject(project: Project): AddProjectAction {
     return {
@@ -66,5 +77,13 @@ export function editProject(project: Project): EditProjectAction {
     return {
         project,
         type: constants.EDIT_PROJECT
+    }
+}
+
+export function updateProjectItem(project: Project, newItem: ProjectItem): UpdateProjectItemAction {
+    return {
+        project,
+        newItem,
+        type: constants.UPDATE_PROJECT_ITEM
     }
 }

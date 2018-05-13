@@ -4,6 +4,7 @@ import { Project, ProjectItem } from '../domain/entities'
 import * as constants from '../domain/constants'
 
 export function ProjectsReducer(state: StoreState, action: ProjectAction): StoreState {
+  console.log(`ProjectReducer, action type: ${action.type}`)
   switch (action.type) {
     case constants.ADD_PROJECT: {
       const newProjects: Project[] = [...state.projects, action.project]
@@ -48,7 +49,7 @@ export function ProjectsReducer(state: StoreState, action: ProjectAction): Store
       })
       return { ...state, projects: newProjects }
     }
-    case constants.EDIT_PROJECT:
+    case constants.EDIT_PROJECT: {
       console.log('EDIT_PROJECT')
       const newProjects = state.projects.map((project) => {
         if (project.id !== action.project.id) {
@@ -61,6 +62,19 @@ export function ProjectsReducer(state: StoreState, action: ProjectAction): Store
         }
       })
       return { ...state, projects: newProjects }
+    }
+    case constants.UPDATE_PROJECT_ITEM: {
+      console.log('UPDATE_PROJECT_ITEM')
+      const newProjects = state.projects.map((project) => {
+        if (project.id === action.project.id) {
+          const newItems = deepCopyUpdate(project.items, action.newItem)
+          return { ...project, items: newItems }
+        } else {
+          return project
+        }
+      })
+      return { ...state, projects: newProjects }
+    }
   }
   return state
 }
@@ -92,6 +106,20 @@ function deepCopyInsert(items: ProjectItem[], parentItem: ProjectItem, insertIte
     }
     const newItem = { ...item, children: newChildren }
     list.push(newItem)
+  })
+  return list
+}
+
+function deepCopyUpdate(items: ProjectItem[], updatedItem: ProjectItem): ProjectItem[] {
+  const list: ProjectItem[] = []
+  items.forEach((item) => {
+    if (item.id === updatedItem.id) {
+      list.push(updatedItem)
+    } else {
+      const newChildren = deepCopyUpdate(item.children, updatedItem)
+      const newItem = { ...item, children: newChildren }
+      list.push(newItem)
+    }
   })
   return list
 }

@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Project, ProjectItem, Task } from '../domain/entities'
+import { Project, ProjectItem } from '../domain/entities'
+import Items from '../items/Items'
 import * as UUID from 'uuid/v4'
 
 export interface StateProps {
@@ -11,6 +12,7 @@ export interface DispatchProps {
     onRemoveProject: (project: Project) => void,
     onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
     onEditProject: (project: Project) => void,
+    onItemStateChanged: (project: Project, newItem: ProjectItem) => void,
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -26,15 +28,15 @@ export default class extends React.Component<Props, {}> {
         const { project } = this.props
         const id = UUID()
         const name = prompt('item name?') || `Item ${id}`
-        const item = new Task(id, name)
+        const item = new ProjectItem(id, name)
         this.props.onAddProjectItem(project, item, undefined)
     }
 
-    handleAddProjectSubItem(item: ProjectItem, e: MouseEvent) {
+    delegateAddSubItem(item: ProjectItem) {
         const { project } = this.props
         const id = UUID()
         const name = prompt('item name?') || `Item ${id}`
-        const subItem = new Task(id, name)
+        const subItem = new ProjectItem(id, name, false)
         this.props.onAddProjectItem(project, subItem, item)
     }
 
@@ -43,36 +45,20 @@ export default class extends React.Component<Props, {}> {
         this.props.onRemoveProject(project)
     }
 
-    handleRemoveProjectItem(item: ProjectItem, e: MouseEvent) {
+    delegateRemoveItem(item: ProjectItem) {
         const { project } = this.props
         this.props.onRemoveProjectItem(project, item)
+    }
+
+    delegateCheckedChanged(item: ProjectItem, completed: boolean) {
+        const { project } = this.props
+        const newItem = { ...item, completed }
+        this.props.onItemStateChanged(project, newItem)
     }
 
     handleEditProject(e: MouseEvent) {
         const { project } = this.props
         this.props.onEditProject(project)
-    }
-
-    createItemsTag(items: ProjectItem[]) {
-        if (items.length == 0) {
-            return undefined
-        }
-        const itemsTag = items.map((item: ProjectItem) => {
-            const tag: JSX.Element = (
-                <li key={item.id}>
-                    {item.name}
-                    <button onClick={this.handleAddProjectSubItem.bind(this, item)}>+</button>
-                    <button onClick={this.handleRemoveProjectItem.bind(this, item)}>-</button>
-                    {this.createItemsTag(item.children)}
-                </li>
-            )
-            return tag
-        })
-        return (
-            <ul>
-                {itemsTag}
-            </ul>
-        )
     }
 
     render() {
@@ -89,7 +75,12 @@ export default class extends React.Component<Props, {}> {
                         <button onClick={this.handleEditProject.bind(this)}>Edit</button>
                     </h1>
                 </header>
-                {this.createItemsTag(items)}
+                <Items
+                    items={items}
+                    onAddSubItem={this.delegateAddSubItem.bind(this)}
+                    onRemoveItem={this.delegateRemoveItem.bind(this)}
+                    onCheckedChanged={this.delegateCheckedChanged.bind(this)}
+                />
             </section>
         )
     }

@@ -13,36 +13,17 @@ export class Project {
     }
 }
 
-export interface ProjectItem {
+export class ProjectItem {
 
     readonly id: string
     readonly name: string
-    readonly children: ProjectItem[]
-}
-
-export class Task implements ProjectItem {
-
-    readonly id: string
-    readonly name: string
-    readonly completed: boolean
+    readonly completed: boolean | undefined
     readonly children: ProjectItem[]
 
-    constructor(id: string, name: string, completed: boolean = false, children: ProjectItem[] = []) {
+    constructor(id: string, name: string, completed: boolean | undefined = undefined, children: ProjectItem[] = []) {
         this.id = id
         this.name = name
-        this.children = children
-    }
-}
-
-export class Note implements ProjectItem {
-
-    readonly id: string
-    readonly name: string
-    readonly children: ProjectItem[]
-
-    constructor(id: string, name: string, children: ProjectItem[] = []) {
-        this.id = id
-        this.name = name
+        this.completed = completed
         this.children = children
     }
 }

@@ -14,6 +14,7 @@ export interface DispatchProps {
     onRemoveProject: (project: Project) => void,
     onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
     onEditProject: (project: Project) => void,
+    onItemStateChanged: (project: Project, newItem: ProjectItem) => void,
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -74,6 +75,10 @@ export class Projects extends React.Component<Props, State> {
         })
     }
 
+    handleItemStateChanged(project: Project, newItem: ProjectItem) {
+        this.props.onItemStateChanged(project, newItem)
+    }
+
     handleWriteDailyReport(e: MouseEvent) {
 
     }
@@ -89,6 +94,7 @@ export class Projects extends React.Component<Props, State> {
                     onRemoveProject={this.handleRemoveProject.bind(this)}
                     onRemoveProjectItem={this.handleRemoveProjectItem.bind(this)}
                     onEditProject={this.handleEditProject.bind(this)}
+                    onItemStateChanged={this.handleItemStateChanged.bind(this)}
                 />
             )
         })
