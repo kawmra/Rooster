@@ -10,6 +10,7 @@ export interface DispatchProps {
     onAddProjectItem: (project: Project, item: ProjectItem, parent: ProjectItem | undefined) => void,
     onRemoveProject: (project: Project) => void,
     onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
+    onEditProject: (project: Project) => void,
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -47,6 +48,11 @@ export default class extends React.Component<Props, {}> {
         this.props.onRemoveProjectItem(project, item)
     }
 
+    handleEditProject(e: MouseEvent) {
+        const { project } = this.props
+        this.props.onEditProject(project)
+    }
+
     createItemsTag(items: ProjectItem[]) {
         if (items.length == 0) {
             return undefined
@@ -80,6 +86,7 @@ export default class extends React.Component<Props, {}> {
                         {title}
                         <button onClick={this.handleAddProjectItem.bind(this)}>+</button>
                         <button onClick={this.handleRemoveProject.bind(this)}>-</button>
+                        <button onClick={this.handleEditProject.bind(this)}>Edit</button>
                     </h1>
                 </header>
                 {this.createItemsTag(items)}
