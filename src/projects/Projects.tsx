@@ -2,7 +2,9 @@ import * as React from 'react'
 import { Project, ProjectItem } from '../domain/entities'
 import ProjectComponent from '../project/Project'
 import ProjectEditor from '../project/ProjectEditor'
+import ReportGenerator from '../ReportGenerator'
 import * as UUID from 'uuid/v4'
+import * as utils from '../utils'
 
 export interface StateProps {
     projects: Project[]
@@ -22,7 +24,8 @@ interface Props extends StateProps, DispatchProps {
 
 interface State {
     editingProject: Project | undefined
-    creatingProject: Project | undefined
+    creatingProject: Project | undefined,
+    reportGenerateMode: boolean,
 }
 
 export class Projects extends React.Component<Props, State> {
@@ -32,6 +35,7 @@ export class Projects extends React.Component<Props, State> {
         this.state = {
             editingProject: undefined,
             creatingProject: undefined,
+            reportGenerateMode: false,
         }
     }
 
@@ -94,7 +98,22 @@ export class Projects extends React.Component<Props, State> {
     }
 
     handleWriteDailyReport(e: MouseEvent) {
+        this.setState({
+            reportGenerateMode: true
+        })
+    }
 
+    handleReportGenerateCancel() {
+        this.setState({
+            reportGenerateMode: false
+        })
+    }
+
+    handleReportGenerated(markdown: string) {
+        console.log(markdown)
+        this.setState({
+            reportGenerateMode: false
+        })
     }
 
     render() {
@@ -112,24 +131,18 @@ export class Projects extends React.Component<Props, State> {
                 />
             )
         })
-        const dailyProjectsTag = projects.map((project) => {
-            const filteredItems = filterDailyTask(project.items)
-            if (filteredItems.length > 0) {
-                const filteredProject = { ...project, items: filteredItems }
-                return <ProjectComponent
-                    project={filteredProject}
-                    key={project.id}
-                    onAddProjectItem={this.handleAddProjectItem.bind(this)}
-                    onRemoveProject={this.handleRemoveProject.bind(this)}
-                    onRemoveProjectItem={this.handleRemoveProjectItem.bind(this)}
-                    onEditProject={this.handleEditProject.bind(this)}
-                    onUpdateProjectItem={this.handleUpdateItem.bind(this)}
-                />
-            } else {
-                return undefined
-            }
-        }).filter((project) => { return project !== undefined })
-        const { editingProject, creatingProject } = this.state
+        const dailyProjectsTag = utils.filterDailyProject(projects).map((project) => {
+            return <ProjectComponent
+                project={project}
+                key={project.id}
+                onAddProjectItem={this.handleAddProjectItem.bind(this)}
+                onRemoveProject={this.handleRemoveProject.bind(this)}
+                onRemoveProjectItem={this.handleRemoveProjectItem.bind(this)}
+                onEditProject={this.handleEditProject.bind(this)}
+                onUpdateProjectItem={this.handleUpdateItem.bind(this)}
+            />
+        })
+        const { editingProject, creatingProject, reportGenerateMode } = this.state
         let projectEditor = undefined
         if (editingProject !== undefined) {
             projectEditor = <ProjectEditor
@@ -144,6 +157,12 @@ export class Projects extends React.Component<Props, State> {
                 onCancel={this.handleCancelCreatingProject.bind(this)}
             />
         }
+        const reportGenerator = reportGenerateMode
+            ? <ReportGenerator
+                projects={projects}
+                onCancel={this.handleReportGenerateCancel.bind(this)}
+                onGenerated={this.handleReportGenerated.bind(this)}
+            /> : undefined
         return (
             <div>
                 <section>
@@ -163,18 +182,8 @@ export class Projects extends React.Component<Props, State> {
                     <button onClick={this.handleWriteDailyReport.bind(this)}>日報を書く</button>
                 </footer>
                 {projectEditor}
+                {reportGenerator}
             </div>
         )
     }
-}
-
-function filterDailyTask(items: ProjectItem[]): ProjectItem[] {
-    const list: ProjectItem[] = []
-    items.forEach((item) => {
-        const filteredChildren = filterDailyTask(item.children)
-        if (item.isDailyTask || filteredChildren.length > 0) {
-            list.push({ ...item, children: filteredChildren })
-        }
-    })
-    return list
 }

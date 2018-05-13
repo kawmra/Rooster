@@ -119,7 +119,6 @@ export default class extends React.Component<Props, State> {
 
     render() {
         const { item } = this.props
-        console.log(typeof item)
         const checkbox = item.completed !== undefined
             ? <input
                 type="checkbox"
@@ -142,9 +141,9 @@ export default class extends React.Component<Props, State> {
                 onSave={this.handleSaveCreating.bind(this)}
             />
         }
-        const style = item.completed !== undefined
-            ? { listStyle: 'none' }
-            : undefined
+        const style = {
+            listStyle: item.completed !== undefined ? 'none' : 'unset',
+        }
         const controllerStyle = {
             display: this.state.hovered ? 'inline' : 'none'
         }
