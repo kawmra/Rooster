@@ -19,11 +19,13 @@ export class ProjectItem {
     readonly name: string
     readonly completed: boolean | undefined
     readonly children: ProjectItem[]
+    readonly isDailyTask: boolean
 
     constructor(id: string, name: string, completed: boolean | undefined = undefined, children: ProjectItem[] = []) {
         this.id = id
         this.name = name
         this.completed = completed
         this.children = children
+        this.isDailyTask = false
     }
 }

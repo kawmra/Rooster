@@ -88,10 +88,17 @@ export default class extends React.Component<Props, State> {
 
     handleSaveCreating(newItem: ProjectItem) {
         const { item } = this.props
-        this.props.onAddSubItem(item, newItem)
+        const modifiedItem = { ...newItem, isDailyTask: item.isDailyTask }
+        this.props.onAddSubItem(item, modifiedItem)
         this.setState({
             creatingItem: undefined
         })
+    }
+
+    handleToggleDailyTask(e: MouseEvent) {
+        const { item } = this.props
+        const newItem: ProjectItem = { ...item, isDailyTask: !item.isDailyTask }
+        this.props.onUpdateItem(newItem)
     }
 
     delegateAddSubItem(parent: ProjectItem, item: ProjectItem) {
@@ -151,6 +158,9 @@ export default class extends React.Component<Props, State> {
                         <button onClick={this.handleAddSubItem.bind(this)}>+</button>
                         <button onClick={this.handleRemoveItem.bind(this)}>-</button>
                         <button onClick={this.handleEditItem.bind(this)}>Edit</button>
+                        <button onClick={this.handleToggleDailyTask.bind(this)}>
+                            {this.props.item.isDailyTask ? 'Won\'t do' : 'Will do'}
+                        </button>
                     </span>
                 </p>
                 <Items
