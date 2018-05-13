@@ -46,41 +46,43 @@ export default class extends React.Component<Props, State> {
         return (
             <div className='modal-container' onClick={this.handleCancel.bind(this)}>
                 <div className='modal-edit_project' onClick={(e) => { e.stopPropagation() }}>
-                    <p>
-                        <label htmlFor="nameText">名前: </label>
-                        <input
-                            id="nameText"
-                            type="text"
-                            value={this.state.name}
-                            onChange={(e) => { this.setState({ name: e.target.value }) }}
-                            autoFocus
-                        />
-                    </p>
-                    <p>
-                        <input
-                            id="completableCheckbox"
-                            type="checkbox"
-                            checked={this.state.completable}
-                            onChange={(e) => { this.setState({ completable: e.target.checked }) }}
-                        />
-                        <label htmlFor="completableCheckbox">チェックボックスを表示する</label>
-                    </p>
-                    {
-                        this.state.completable ?
-                            <p>
-                                <input
-                                    id="completedCheckbox"
-                                    type="checkbox"
-                                    checked={this.state.completed}
-                                    onChange={(e) => { this.setState({ completed: e.target.checked }) }}
-                                />
-                                <label htmlFor="completedCheckbox">完了</label>
-                            </p> : undefined
-                    }
-                    <p>
-                        <button onClick={this.handleCancel.bind(this)}>キャンセル</button>
-                        <button onClick={this.handleSave.bind(this)}>保存</button>
-                    </p>
+                    <form onSubmit={(e) => { e.preventDefault() }}>
+                        <p>
+                            <label htmlFor="nameText">名前: </label>
+                            <input
+                                id="nameText"
+                                type="text"
+                                value={this.state.name}
+                                onChange={(e) => { this.setState({ name: e.target.value }) }}
+                                autoFocus
+                            />
+                        </p>
+                        <p>
+                            <input
+                                id="completableCheckbox"
+                                type="checkbox"
+                                checked={this.state.completable}
+                                onChange={(e) => { this.setState({ completable: e.target.checked }) }}
+                            />
+                            <label htmlFor="completableCheckbox">チェックボックスを表示する</label>
+                        </p>
+                        {
+                            this.state.completable ?
+                                <p>
+                                    <input
+                                        id="completedCheckbox"
+                                        type="checkbox"
+                                        checked={this.state.completed}
+                                        onChange={(e) => { this.setState({ completed: e.target.checked }) }}
+                                    />
+                                    <label htmlFor="completedCheckbox">完了</label>
+                                </p> : undefined
+                        }
+                        <p>
+                            <button type="button" onClick={this.handleCancel.bind(this)}>キャンセル</button>
+                            <button type="submit" onClick={this.handleSave.bind(this)}>保存</button>
+                        </p>
+                    </form>
                 </div>
             </div>
         )

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Project, ProjectItem } from '../domain/entities'
 import Items from '../items/Items'
+import ItemEditor from '../items/ItemEditor'
 import * as UUID from 'uuid/v4'
 
 export interface StateProps {
@@ -18,18 +19,39 @@ export interface DispatchProps {
 interface Props extends StateProps, DispatchProps {
 }
 
-export default class extends React.Component<Props, {}> {
+interface State {
+    creatingItem: ProjectItem | undefined
+}
+
+export default class extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
+        this.state = {
+            creatingItem: undefined
+        }
     }
 
     handleAddProjectItem(e: MouseEvent) {
-        const { project } = this.props
         const id = UUID()
-        const name = prompt('item name?') || `Item ${id}`
-        const item = new ProjectItem(id, name)
+        const newItem = new ProjectItem(id, '')
+        this.setState({
+            creatingItem: newItem
+        })
+    }
+
+    handleSaveCreatingItem(item: ProjectItem) {
+        const { project } = this.props
         this.props.onAddProjectItem(project, item, undefined)
+        this.setState({
+            creatingItem: undefined
+        })
+    }
+
+    handleCancelCreatingItem(item: ProjectItem) {
+        this.setState({
+            creatingItem: undefined
+        })
     }
 
     delegateAddSubItem(parent: ProjectItem, item: ProjectItem) {
@@ -67,6 +89,13 @@ export default class extends React.Component<Props, {}> {
         const { name, honeyCode, items } = this.props.project
         console.log(`render project! name: ${name}, items count: ${items.length}`)
         const title = honeyCode ? `【${honeyCode}】${name}` : name
+        const { creatingItem } = this.state
+        const createItemEditor = creatingItem !== undefined
+            ? <ItemEditor
+                item={creatingItem}
+                onCancel={this.handleCancelCreatingItem.bind(this)}
+                onSave={this.handleSaveCreatingItem.bind(this)}
+            /> : undefined
         return (
             <section>
                 <header>
@@ -84,6 +113,7 @@ export default class extends React.Component<Props, {}> {
                     onUpdateItem={this.delegateUpdateItem.bind(this)}
                     onCheckedChanged={this.delegateCheckedChanged.bind(this)}
                 />
+                {createItemEditor}
             </section>
         )
     }

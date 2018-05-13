@@ -3,6 +3,7 @@ import { ProjectItem } from '../domain/entities'
 import Items from './Items'
 import ItemEditor from './ItemEditor'
 import * as UUID from 'uuid/v4'
+import '../css/item.css'
 
 interface Props {
     item: ProjectItem
@@ -16,6 +17,7 @@ interface State {
     completed: boolean | undefined
     editingItem: ProjectItem | undefined
     creatingItem: ProjectItem | undefined
+    hovered: boolean
 }
 
 export default class extends React.Component<Props, State> {
@@ -26,6 +28,7 @@ export default class extends React.Component<Props, State> {
             completed: props.item.completed,
             editingItem: undefined,
             creatingItem: undefined,
+            hovered: false,
         }
     }
 
@@ -135,13 +138,21 @@ export default class extends React.Component<Props, State> {
         const style = item.completed !== undefined
             ? { listStyle: 'none' }
             : undefined
+        const controllerStyle = {
+            display: this.state.hovered ? 'inline' : 'none'
+        }
         return (
-            <li key={item.id} style={style}>
-                {checkbox}
-                {item.name}
-                <button onClick={this.handleAddSubItem.bind(this)}>+</button>
-                <button onClick={this.handleRemoveItem.bind(this)}>-</button>
-                <button onClick={this.handleEditItem.bind(this)}>Edit</button>
+            <li className="item" style={style}>
+                <p onMouseEnter={() => { this.setState({ hovered: true }) }}
+                    onMouseLeave={() => { this.setState({ hovered: false }) }}>
+                    {checkbox}
+                    {item.name || "[No Name]"}
+                    <span style={controllerStyle}>
+                        <button onClick={this.handleAddSubItem.bind(this)}>+</button>
+                        <button onClick={this.handleRemoveItem.bind(this)}>-</button>
+                        <button onClick={this.handleEditItem.bind(this)}>Edit</button>
+                    </span>
+                </p>
                 <Items
                     items={item.children}
                     onAddSubItem={this.delegateAddSubItem.bind(this)}
