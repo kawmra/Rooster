@@ -32,11 +32,14 @@ export default class extends React.Component<Props, State> {
 
     handleGenerate() {
         const { projects } = this.props
+        const today = new Date()
+        const todayStr = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
         const dailyprojects = generateProjectsMarkdown(utils.filterDailyProject(projects))
         const allprojects = generateProjectsMarkdown(projects)
         const { startTime, endTime, restHours } = this.state
         const actualWorkingHours = sToHm(hmStrToS(endTime) - hmStrToS(startTime) - hmStrToS(restHours))
         const report = reportTemplate
+            .replace('[[date]]', todayStr)
             .replace('[[dailyprojects]]', dailyprojects.join("\n\n"))
             .replace('[[allprojects]]', allprojects.join("\n\n"))
             .replace('[[starttime]]', startTime)
@@ -68,7 +71,10 @@ function generateProjectsMarkdown(projects: Project[]): string[] {
         const itemsStr = itemsMd.length > 0
             ? "\n" + itemsMd.join("\n")
             : ''
-        return `### 【${honeyCode}】${name}${itemsStr}`
+        const honeyCodeStr = honeyCode !== undefined
+            ? `【${honeyCode}】`
+            : ''
+        return `### ${honeyCodeStr}${name}${itemsStr}`
     })
 }
 
@@ -101,7 +107,8 @@ function formatHm(hm: { h: number, m: number }): string {
         : `${hm.h}h`
 }
 
-const reportTemplate = `# 本日の作業内容
+const reportTemplate = `# [[date]]
+# 本日の作業内容
 ## 勤務時間
 * 勤務時間：[[starttime]] - [[endtime]]
 * 休憩：[[resthours]]
