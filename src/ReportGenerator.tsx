@@ -81,7 +81,7 @@ function generateProjectsMarkdown(projects: Project[]): string[] {
 function generateItemsMarkdown(items: ProjectItem[], nest: number = 0): string[] {
     return items.map((item) => {
         const { name, completed, children } = item
-        const indent = '  '.repeat(nest)
+        const indent = "\t".repeat(nest)
         const checkbox = completed !== undefined
             ? ' [' + (completed ? 'x' : ' ') + ']'
             : ''
