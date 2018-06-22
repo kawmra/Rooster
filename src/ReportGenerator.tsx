@@ -37,7 +37,11 @@ export default class extends React.Component<Props, State> {
         const dailyprojects = generateProjectsMarkdown(utils.filterDailyProject(projects))
         const allprojects = generateProjectsMarkdown(projects)
         const { startTime, endTime, restHours } = this.state
-        const actualWorkingHours = sToHm(hmStrToS(endTime) - hmStrToS(startTime) - hmStrToS(restHours))
+        let endTimeS = hmStrToS(endTime)
+        if (endTimeS < hmStrToS(startTime)) {
+            endTimeS = endTimeS + (60 * 60 * 24)
+        }
+        const actualWorkingHours = sToHm(endTimeS - hmStrToS(startTime) - hmStrToS(restHours))
         const report = reportTemplate
             .replace('[[date]]', todayStr)
             .replace('[[dailyprojects]]', dailyprojects.join("\n\n"))
@@ -46,7 +50,6 @@ export default class extends React.Component<Props, State> {
             .replace('[[endtime]]', endTime)
             .replace('[[resthours]]', formatHm(sToHm(hmStrToS(restHours))))
             .replace('[[actualworkinghours]]', formatHm(actualWorkingHours))
-        utils
         this.props.onGenerated(report)
     }
 
