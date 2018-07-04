@@ -46,8 +46,8 @@ export default class extends React.Component<Props, State> {
             .replace('[[date]]', todayStr)
             .replace('[[dailyprojects]]', dailyprojects.join("\n\n"))
             .replace('[[allprojects]]', allprojects.join("\n\n"))
-            .replace('[[starttime]]', startTime)
-            .replace('[[endtime]]', endTime)
+            .replace('[[starttime]]', zeroPadding(startTime))
+            .replace('[[endtime]]', zeroPadding(endTime))
             .replace('[[resthours]]', formatHm(sToHm(hmStrToS(restHours))))
             .replace('[[actualworkinghours]]', formatHm(actualWorkingHours))
         this.props.onGenerated(report)
@@ -108,6 +108,10 @@ function formatHm(hm: { h: number, m: number }): string {
     return hm.m > 0
         ? `${hm.h}h${hm.m}min`
         : `${hm.h}h`
+}
+
+function zeroPadding(num: string) {
+    return ("0" + num).slice(-2)
 }
 
 const reportTemplate = `# [[date]]
