@@ -33,7 +33,7 @@ export default class extends React.Component<Props, State> {
     handleGenerate() {
         const { projects } = this.props
         const today = new Date()
-        const todayStr = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
+        const todayStr = `${today.getFullYear()}/${zeroPadding(today.getMonth() + 1)}/${zeroPadding(today.getDate())}`
         const dailyprojects = generateProjectsMarkdown(utils.filterDailyProject(projects))
         const allprojects = generateProjectsMarkdown(projects)
         const { startTime, endTime, restHours } = this.state
@@ -46,8 +46,8 @@ export default class extends React.Component<Props, State> {
             .replace('[[date]]', todayStr)
             .replace('[[dailyprojects]]', dailyprojects.join("\n\n"))
             .replace('[[allprojects]]', allprojects.join("\n\n"))
-            .replace('[[starttime]]', zeroPadding(startTime))
-            .replace('[[endtime]]', zeroPadding(endTime))
+            .replace('[[starttime]]', startTime)
+            .replace('[[endtime]]', endTime)
             .replace('[[resthours]]', formatHm(sToHm(hmStrToS(restHours))))
             .replace('[[actualworkinghours]]', formatHm(actualWorkingHours))
         this.props.onGenerated(report)
@@ -110,7 +110,7 @@ function formatHm(hm: { h: number, m: number }): string {
         : `${hm.h}h`
 }
 
-function zeroPadding(num: string) {
+function zeroPadding(num: number) {
     return ("0" + num).slice(-2)
 }
 
