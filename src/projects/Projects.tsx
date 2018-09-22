@@ -24,8 +24,8 @@ interface Props extends StateProps, DispatchProps {
 
 interface State {
     editingProject: Project | undefined
-    creatingProject: Project | undefined,
-    reportGenerateMode: boolean,
+    creatingProject: Project | undefined
+    generatedReport: string | undefined
 }
 
 export class Projects extends React.Component<Props, State> {
@@ -35,7 +35,7 @@ export class Projects extends React.Component<Props, State> {
         this.state = {
             editingProject: undefined,
             creatingProject: undefined,
-            reportGenerateMode: false,
+            generatedReport: undefined,
         }
     }
 
@@ -97,22 +97,15 @@ export class Projects extends React.Component<Props, State> {
         this.props.onUpdateProjectItem(project, newItem)
     }
 
-    handleWriteDailyReport(e: MouseEvent) {
-        this.setState({
-            reportGenerateMode: true
-        })
-    }
-
-    handleReportGenerateCancel() {
-        this.setState({
-            reportGenerateMode: false
-        })
-    }
-
     handleReportGenerated(markdown: string) {
-        console.log(markdown)
         this.setState({
-            reportGenerateMode: false
+            generatedReport: markdown
+        })
+    }
+
+    handleCloseGeneratedReport() {
+        this.setState({
+            generatedReport: undefined
         })
     }
 
@@ -142,7 +135,7 @@ export class Projects extends React.Component<Props, State> {
                 onUpdateProjectItem={this.handleUpdateItem.bind(this)}
             />
         })
-        const { editingProject, creatingProject, reportGenerateMode } = this.state
+        const { editingProject, creatingProject } = this.state
         let projectEditor = undefined
         if (editingProject !== undefined) {
             projectEditor = <ProjectEditor
@@ -157,12 +150,6 @@ export class Projects extends React.Component<Props, State> {
                 onCancel={this.handleCancelCreatingProject.bind(this)}
             />
         }
-        const reportGenerator = reportGenerateMode
-            ? <ReportGenerator
-                projects={projects}
-                onCancel={this.handleReportGenerateCancel.bind(this)}
-                onGenerated={this.handleReportGenerated.bind(this)}
-            /> : undefined
         return (
             <div>
                 <section>
@@ -179,10 +166,22 @@ export class Projects extends React.Component<Props, State> {
                     {projectsTag}
                 </section>
                 <footer>
-                    <button onClick={this.handleWriteDailyReport.bind(this)}>日報を書く</button>
+                    <ReportGenerator
+                        projects={projects}
+                        onGenerated={this.handleReportGenerated.bind(this)}
+                    />
                 </footer>
                 {projectEditor}
-                {reportGenerator}
+                {this.state.generatedReport && (
+                    <div className="modal-container" onClick={this.handleCloseGeneratedReport.bind(this)}>
+                        <textarea
+                            onClick={(e) => { e.stopPropagation() }}
+                            style={{ width: '80%', height: '80%' }}
+                            value={this.state.generatedReport}
+                            readOnly={true}
+                        />
+                    </div>
+                )}
             </div>
         )
     }
