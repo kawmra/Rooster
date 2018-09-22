@@ -39,11 +39,11 @@ export function ProjectsReducer(state: StoreState, action: ProjectAction): Store
       return { ...state, projects: newProjects }
     }
     case constants.REMOVE_PROJECT_ITEM: {
-      const newItems = deepCopyExclude(action.project.items, action.item)
       const newProjects = state.projects.map((project) => {
         if (project.id !== action.project.id) {
           return project
         } else {
+          const newItems = deepCopyExclude(project.items, action.item)
           return { ...project, items: newItems }
         }
       })
