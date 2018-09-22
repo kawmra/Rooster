@@ -111,6 +111,7 @@ function deepCopyUpdate(items: ProjectItem[], updatedItem: ProjectItem): Project
   const list: ProjectItem[] = []
   items.forEach((item) => {
     if (item.id === updatedItem.id) {
+      // children は更新しない
       list.push({ ...updatedItem, children: item.children })
     } else {
       const newChildren = deepCopyUpdate(item.children, updatedItem)
