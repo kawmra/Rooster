@@ -14,9 +14,15 @@ export function filterDailyProject(projects: Project[]): Project[] {
 export function filterDailyTask(items: ProjectItem[]): ProjectItem[] {
     const list: ProjectItem[] = []
     items.forEach((item) => {
-        const filteredChildren = filterDailyTask(item.children)
-        if (item.isDailyTask || filteredChildren.length > 0) {
-            list.push({ ...item, children: filteredChildren })
+        if (item.isDailyTask) {
+            // 自身が今日のタスクである場合は全てのサブタスクも今日のタスクとみなす
+            list.push(item)
+        } else {
+            const filteredChildren = filterDailyTask(item.children)
+            if (filteredChildren.length > 0) {
+                // サブタスクが一つ以上今日のタスクであれば自身も表示する（階層構造が壊れるから）
+                list.push({ ...item, children: filteredChildren })
+            }
         }
     })
     return list
