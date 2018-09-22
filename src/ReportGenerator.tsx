@@ -5,7 +5,6 @@ import './css/modal.css'
 
 interface Props {
     projects: Project[],
-    onCancel: () => void,
     onGenerated: (markdown: string) => void,
 }
 
@@ -26,10 +25,6 @@ export default class extends React.Component<Props, State> {
         }
     }
 
-    handleCancel() {
-        this.props.onCancel()
-    }
-
     handleGenerate() {
         const { projects } = this.props
         const today = new Date()
@@ -37,31 +32,37 @@ export default class extends React.Component<Props, State> {
         const dailyprojects = generateProjectsMarkdown(utils.filterDailyProject(projects))
         const allprojects = generateProjectsMarkdown(projects)
         const { startTime, endTime, restHours } = this.state
+        const startTimeS = hmStrToS(startTime)
+        const restHoursS = hmStrToS(restHours)
         let endTimeS = hmStrToS(endTime)
         if (endTimeS < hmStrToS(startTime)) {
             endTimeS = endTimeS + (60 * 60 * 24)
         }
-        const actualWorkingHours = sToHm(endTimeS - hmStrToS(startTime) - hmStrToS(restHours))
+        if (isNaN(startTimeS) || isNaN(endTimeS) || isNaN(restHoursS)) {
+            alert("出退勤時刻と休憩時間を正しく入力してください。")
+            return
+        }
+        const actualWorkingHours = sToHm(endTimeS - startTimeS - restHoursS)
         const report = reportTemplate
             .replace('[[date]]', todayStr)
             .replace('[[dailyprojects]]', dailyprojects.join("\n\n"))
             .replace('[[allprojects]]', allprojects.join("\n\n"))
             .replace('[[starttime]]', startTime)
             .replace('[[endtime]]', endTime)
-            .replace('[[resthours]]', formatHm(sToHm(hmStrToS(restHours))))
+            .replace('[[resthours]]', formatHm(sToHm(restHoursS)))
             .replace('[[actualworkinghours]]', formatHm(actualWorkingHours))
         this.props.onGenerated(report)
     }
 
     render() {
         return (
-            <div className='modal-container' onClick={this.handleCancel.bind(this)}>
-                <div className='modal-edit_project' onClick={(e) => { e.stopPropagation() }}>
-                    <label>開始時刻: <input type="time" value={this.state.startTime} onChange={(e) => { this.setState({ startTime: e.target.value }) }} /></label>
-                    <label>終了時刻: <input type="time" value={this.state.endTime} onChange={(e) => { this.setState({ endTime: e.target.value }) }} /></label>
-                    <label>休憩時間: <input type="time" value={this.state.restHours} onChange={(e) => { this.setState({ restHours: e.target.value }) }} /></label>
-                    <button onClick={this.handleGenerate.bind(this)}>生成</button>
-                </div>
+            <div>
+                <label>開始時刻: <input type="time" value={this.state.startTime} onChange={(e) => { this.setState({ startTime: e.target.value }) }} /></label>
+                <label>終了時刻: <input type="time" value={this.state.endTime} onChange={(e) => { this.setState({ endTime: e.target.value }) }} /></label>
+                <label>休憩時間: <input type="time" value={this.state.restHours} onChange={(e) => { this.setState({ restHours: e.target.value }) }} /></label>
+                <p>
+                    <button onClick={this.handleGenerate.bind(this)}>日報を生成</button>
+                </p>
             </div>
         )
     }
