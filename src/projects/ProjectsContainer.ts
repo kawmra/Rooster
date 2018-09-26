@@ -6,7 +6,8 @@ import { Project, ProjectItem } from '../domain/entities'
 
 export function mapStateToProps(state: StoreState): StateProps {
     return {
-        projects: state.projects
+        projects: state.projects,
+        template: state.template,
     }
 }
 
@@ -18,6 +19,7 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.ProjectAction>): D
         onRemoveProjectItem: (project: Project, item: ProjectItem) => dispatch(actions.removeProjectItem(project, item)),
         onEditProject: (project: Project) => dispatch(actions.editProject(project)),
         onUpdateProjectItem: (project: Project, newItem: ProjectItem) => dispatch(actions.updateProjectItem(project, newItem)),
+        onTemplateEdit: (newTemplate: string) => dispatch(actions.editTemplate(newTemplate)),
     }
 }
 

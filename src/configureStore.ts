@@ -12,6 +12,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, ProjectsReducer)
 
 export const store = createStore<StoreState>(persistedReducer, {
-    projects: []
+    projects: [],
+    template: ''
 })
 export const persistor = persistStore(store)

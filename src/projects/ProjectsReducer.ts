@@ -72,6 +72,9 @@ export function ProjectsReducer(state: StoreState, action: ProjectAction): Store
       })
       return { ...state, projects: newProjects }
     }
+    case constants.EDIT_TEMPLATE: {
+      return { ...state, template: action.newTemplate }
+    }
   }
   return state
 }

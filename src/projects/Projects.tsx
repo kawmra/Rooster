@@ -3,11 +3,13 @@ import { Project, ProjectItem } from '../domain/entities'
 import ProjectComponent from '../project/Project'
 import ProjectEditor from '../project/ProjectEditor'
 import ReportGenerator from '../ReportGenerator'
+import TemplateEditor from '../TemplateEditor'
 import * as UUID from 'uuid/v4'
 import * as utils from '../utils'
 
 export interface StateProps {
     projects: Project[]
+    template: string
 }
 
 export interface DispatchProps {
@@ -17,6 +19,7 @@ export interface DispatchProps {
     onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
     onEditProject: (project: Project) => void,
     onUpdateProjectItem: (project: Project, newItem: ProjectItem) => void,
+    onTemplateEdit: (newTemplate: string) => void
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -26,6 +29,7 @@ interface State {
     editingProject: Project | undefined
     creatingProject: Project | undefined
     generatedReport: string | undefined
+    templateEditing: boolean
 }
 
 export class Projects extends React.Component<Props, State> {
@@ -36,6 +40,7 @@ export class Projects extends React.Component<Props, State> {
             editingProject: undefined,
             creatingProject: undefined,
             generatedReport: undefined,
+            templateEditing: false
         }
     }
 
@@ -109,6 +114,13 @@ export class Projects extends React.Component<Props, State> {
         })
     }
 
+    handleOnTemplateEdit(newTemplate: string) {
+        this.props.onTemplateEdit(newTemplate)
+        this.setState({
+            templateEditing: false
+        })
+    }
+
     render() {
         const { projects } = this.props
         const projectsTag = projects.map((project: Project) => {
@@ -168,6 +180,7 @@ export class Projects extends React.Component<Props, State> {
                 <footer>
                     <ReportGenerator
                         projects={projects}
+                        template={this.props.template}
                         onGenerated={this.handleReportGenerated.bind(this)}
                     />
                 </footer>
@@ -182,6 +195,14 @@ export class Projects extends React.Component<Props, State> {
                         />
                     </div>
                 )}
+                <button onClick={(e) => { this.setState({ templateEditing: true }) }}>テンプレートを編集</button>
+                {this.state.templateEditing &&
+                    <TemplateEditor
+                        template={this.props.template}
+                        onEdit={this.handleOnTemplateEdit.bind(this)}
+                        onCancel={() => { this.setState({ templateEditing: false }) }}
+                    />
+                }
             </div>
         )
     }

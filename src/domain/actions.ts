@@ -35,12 +35,18 @@ export interface UpdateProjectItemAction {
     type: constants.UPDATE_PROJECT_ITEM
 }
 
+export interface TemplateEditAction {
+    newTemplate: string
+    type: constants.EDIT_TEMPLATE
+}
+
 export type ProjectAction = AddProjectAction
     | AddProjectItemAction
     | RemoveProjectAction
     | RemoveProjectItemAction
     | EditProjectAction
     | UpdateProjectItemAction
+    | TemplateEditAction
 
 export function addProject(project: Project): AddProjectAction {
     return {
@@ -85,5 +91,12 @@ export function updateProjectItem(project: Project, newItem: ProjectItem): Updat
         project,
         newItem,
         type: constants.UPDATE_PROJECT_ITEM
+    }
+}
+
+export function editTemplate(newTemplate: string): TemplateEditAction {
+    return {
+        newTemplate,
+        type: constants.EDIT_TEMPLATE
     }
 }

@@ -4,8 +4,9 @@ import * as utils from './utils'
 import './css/modal.css'
 
 interface Props {
-    projects: Project[],
-    onGenerated: (markdown: string) => void,
+    projects: Project[]
+    template: string
+    onGenerated: (markdown: string) => void
 }
 
 interface State {
@@ -43,7 +44,7 @@ export default class extends React.Component<Props, State> {
             return
         }
         const actualWorkingHours = sToHm(endTimeS - startTimeS - restHoursS)
-        const report = reportTemplate
+        const report = this.props.template
             .replace('[[date]]', todayStr)
             .replace('[[dailyprojects]]', dailyprojects.join("\n\n"))
             .replace('[[allprojects]]', allprojects.join("\n\n"))
@@ -114,17 +115,3 @@ function formatHm(hm: { h: number, m: number }): string {
 function zeroPadding(num: number) {
     return ("0" + num).slice(-2)
 }
-
-const reportTemplate = `# [[date]]
-# 本日の作業内容
-## 勤務時間
-* 勤務時間：[[starttime]] - [[endtime]]
-* 休憩：[[resthours]]
-* 実働時間：[[actualworkinghours]]
-
-## 本日のタスク
-[[dailyprojects]]
-
-## 全てのタスク
-[[allprojects]]
-`
