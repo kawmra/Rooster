@@ -6,6 +6,7 @@ import ReportGenerator from '../ReportGenerator'
 import TemplateEditor from '../TemplateEditor'
 import * as UUID from 'uuid/v4'
 import * as utils from '../utils'
+import { StoreState } from '../domain/stores';
 
 export interface StateProps {
     projects: Project[]
@@ -20,6 +21,7 @@ export interface DispatchProps {
     onEditProject: (project: Project) => void,
     onUpdateProjectItem: (project: Project, newItem: ProjectItem) => void,
     onTemplateEdit: (newTemplate: string) => void
+    onImportStore: (store: StoreState) => void
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -121,6 +123,22 @@ export class Projects extends React.Component<Props, State> {
         })
     }
 
+    handleExport() {
+        const store: StoreState = { projects: this.props.projects, template: this.props.template }
+        console.log(`EXPORTED ---\n${JSON.stringify(store)}\n---`)
+        alert('Exported! See your console.')
+    }
+
+    handleImport() {
+        const jsonStr = prompt('Input exported json:')
+        if (!jsonStr) {
+            alert('Import canceled.')
+            return
+        }
+        this.props.onImportStore(JSON.parse(jsonStr))
+        alert('Imported successfully.')
+    }
+
     render() {
         const { projects } = this.props
         const projectsTag = projects.map((project: Project) => {
@@ -203,6 +221,10 @@ export class Projects extends React.Component<Props, State> {
                         onCancel={() => { this.setState({ templateEditing: false }) }}
                     />
                 }
+                <p>
+                    <button onClick={this.handleExport.bind(this)}>Export</button>
+                    <button onClick={this.handleImport.bind(this)}>Import</button>
+                </p>
             </div>
         )
     }

@@ -1,5 +1,6 @@
 import * as constants from './constants'
 import { Project, ProjectItem } from './entities'
+import { StoreState } from './stores';
 
 export interface AddProjectAction {
     project: Project
@@ -40,6 +41,11 @@ export interface TemplateEditAction {
     type: constants.EDIT_TEMPLATE
 }
 
+export interface ImportStoreAction {
+    store: StoreState
+    type: constants.IMPORT_STORE
+}
+
 export type ProjectAction = AddProjectAction
     | AddProjectItemAction
     | RemoveProjectAction
@@ -47,6 +53,7 @@ export type ProjectAction = AddProjectAction
     | EditProjectAction
     | UpdateProjectItemAction
     | TemplateEditAction
+    | ImportStoreAction
 
 export function addProject(project: Project): AddProjectAction {
     return {
@@ -98,5 +105,12 @@ export function editTemplate(newTemplate: string): TemplateEditAction {
     return {
         newTemplate,
         type: constants.EDIT_TEMPLATE
+    }
+}
+
+export function importStore(store: StoreState): ImportStoreAction {
+    return {
+        store,
+        type: constants.IMPORT_STORE
     }
 }
