@@ -18,3 +18,6 @@ export type UPDATE_PROJECT_ITEM = typeof UPDATE_PROJECT_ITEM
 
 export const EDIT_TEMPLATE = 'EDIT_TEMPLATE'
 export type EDIT_TEMPLATE = typeof EDIT_TEMPLATE
+
+export const IMPORT_STORE = 'IMPORT_STORE'
+export type IMPORT_STORE = typeof IMPORT_STORE

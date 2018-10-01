@@ -20,6 +20,7 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.ProjectAction>): D
         onEditProject: (project: Project) => dispatch(actions.editProject(project)),
         onUpdateProjectItem: (project: Project, newItem: ProjectItem) => dispatch(actions.updateProjectItem(project, newItem)),
         onTemplateEdit: (newTemplate: string) => dispatch(actions.editTemplate(newTemplate)),
+        onImportStore: (store: StoreState) => dispatch(actions.importStore(store)),
     }
 }
 
