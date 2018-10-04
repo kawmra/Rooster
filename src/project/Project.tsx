@@ -14,6 +14,8 @@ export interface DispatchProps {
     onRemoveProjectItem: (project: Project, item: ProjectItem) => void,
     onEditProject: (project: Project) => void,
     onUpdateProjectItem: (project: Project, newItem: ProjectItem) => void,
+    onMoveForwardProject?: (project: Project) => void,
+    onMoveBackwardProject?: (project: Project) => void,
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -85,6 +87,16 @@ export default class extends React.Component<Props, State> {
         this.props.onEditProject(project)
     }
 
+    handleMoveForwardProject(e: MouseEvent) {
+        const { project } = this.props
+        this.props.onMoveForwardProject && this.props.onMoveForwardProject(project)
+    }
+
+    handleMoveBackwardProject(e: MouseEvent) {
+        const { project } = this.props
+        this.props.onMoveBackwardProject && this.props.onMoveBackwardProject(project)
+    }
+
     render() {
         const { name, honeyCode, items } = this.props.project
         console.log(`render project! name: ${name}, items count: ${items.length}`)
@@ -104,6 +116,8 @@ export default class extends React.Component<Props, State> {
                         <button onClick={this.handleAddProjectItem.bind(this)}>+</button>
                         <button onClick={this.handleRemoveProject.bind(this)}>-</button>
                         <button onClick={this.handleEditProject.bind(this)}>Edit</button>
+                        {this.props.onMoveForwardProject && <button onClick={this.handleMoveForwardProject.bind(this)}>↑</button>}
+                        {this.props.onMoveBackwardProject && <button onClick={this.handleMoveBackwardProject.bind(this)}>↓</button>}
                     </h1>
                 </header>
                 <Items

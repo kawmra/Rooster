@@ -46,6 +46,16 @@ export interface ImportStoreAction {
     type: constants.IMPORT_STORE
 }
 
+export interface MoveForwardProjectAction {
+    project: Project
+    type: constants.MOVE_FORWARD_PROJECT
+}
+
+export interface MoveBackwardProjectAction {
+    project: Project
+    type: constants.MOVE_BACKWARD_PROJECT
+}
+
 export type ProjectAction = AddProjectAction
     | AddProjectItemAction
     | RemoveProjectAction
@@ -54,6 +64,8 @@ export type ProjectAction = AddProjectAction
     | UpdateProjectItemAction
     | TemplateEditAction
     | ImportStoreAction
+    | MoveForwardProjectAction
+    | MoveBackwardProjectAction
 
 export function addProject(project: Project): AddProjectAction {
     return {
@@ -112,5 +124,19 @@ export function importStore(store: StoreState): ImportStoreAction {
     return {
         store,
         type: constants.IMPORT_STORE
+    }
+}
+
+export function moveForwardProject(project: Project): MoveForwardProjectAction {
+    return {
+        project,
+        type: constants.MOVE_FORWARD_PROJECT,
+    }
+}
+
+export function moveBackwardProject(project: Project): MoveBackwardProjectAction {
+    return {
+        project,
+        type: constants.MOVE_BACKWARD_PROJECT,
     }
 }
