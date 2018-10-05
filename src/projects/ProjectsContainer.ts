@@ -21,6 +21,8 @@ export function mapDispatchToProps(dispatch: Dispatch<actions.ProjectAction>): D
         onUpdateProjectItem: (project: Project, newItem: ProjectItem) => dispatch(actions.updateProjectItem(project, newItem)),
         onTemplateEdit: (newTemplate: string) => dispatch(actions.editTemplate(newTemplate)),
         onImportStore: (store: StoreState) => dispatch(actions.importStore(store)),
+        onMoveForwardProject: (project: Project) => dispatch(actions.moveForwardProject(project)),
+        onMoveBackwardProject: (project: Project) => dispatch(actions.moveBackwardProject(project))
     }
 }
 

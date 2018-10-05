@@ -78,8 +78,39 @@ export function ProjectsReducer(state: StoreState, action: ProjectAction): Store
     case constants.IMPORT_STORE: {
       return { ...state, ...action.store }
     }
+    case constants.MOVE_FORWARD_PROJECT: {
+      const sortedPorjects = sortProject(state.projects, action.project.id, SortType.up)
+      return { ...state, projects: sortedPorjects }
+    }
+    case constants.MOVE_BACKWARD_PROJECT: {
+      const sortedPorjects = sortProject(state.projects, action.project.id, SortType.down)
+      return { ...state, projects: sortedPorjects }
+    }
   }
   return state
+}
+
+enum SortType {
+  up = 'up',
+  down = 'down'
+}
+
+function sortProject(projects: Project[], id: string, type: SortType): Project[] {
+  const newProjects = [...projects]
+  const index = newProjects.findIndex(project => {
+    return project.id === id
+  })
+  if (index < 0 || projects.length <= index) {
+    return newProjects
+  }
+  if (type === SortType.up && 0 < index) {
+    newProjects.splice(index - 1, 2, newProjects[index], newProjects[index - 1])
+  }
+  if (type === SortType.down && index < (projects.length - 1)) {
+    // 終端のとき( index == (projects.length - 1))は処理をしない
+    newProjects.splice(index, 2, newProjects[index + 1], newProjects[index])
+  }
+  return newProjects
 }
 
 function findProject(projects: Project[], id: string): Project | null {

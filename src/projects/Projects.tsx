@@ -22,6 +22,8 @@ export interface DispatchProps {
     onUpdateProjectItem: (project: Project, newItem: ProjectItem) => void,
     onTemplateEdit: (newTemplate: string) => void
     onImportStore: (store: StoreState) => void
+    onMoveForwardProject: (project: Project) => void
+    onMoveBackwardProject: (project: Project) => void
 }
 
 interface Props extends StateProps, DispatchProps {
@@ -139,6 +141,14 @@ export class Projects extends React.Component<Props, State> {
         alert('Imported successfully.')
     }
 
+    handleMoveForwardProject(project: Project) {
+        this.props.onMoveForwardProject(project)
+    }
+
+    handleMoveBackwardProject(project: Project) {
+        this.props.onMoveBackwardProject(project)
+    }
+
     render() {
         const { projects } = this.props
         const projectsTag = projects.map((project: Project) => {
@@ -151,6 +161,8 @@ export class Projects extends React.Component<Props, State> {
                     onRemoveProjectItem={this.handleRemoveProjectItem.bind(this)}
                     onEditProject={this.handleEditProject.bind(this)}
                     onUpdateProjectItem={this.handleUpdateItem.bind(this)}
+                    onMoveForwardProject={this.handleMoveForwardProject.bind(this)}
+                    onMoveBackwardProject={this.handleMoveBackwardProject.bind(this)}
                 />
             )
         })
