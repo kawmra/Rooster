@@ -100,7 +100,7 @@ function sortProject(projects: Project[], id: string, type: SortType): Project[]
   const index = newProjects.findIndex(project => {
     return project.id === id
   })
-  if (index < 0 && projects.length <= index) {
+  if (index < 0 || projects.length <= index) {
     return newProjects
   }
   if (type === SortType.up && 0 < index) {
