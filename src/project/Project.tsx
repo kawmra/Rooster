@@ -61,11 +61,17 @@ export default class extends React.Component<Props, State> {
 
     handleRemoveProject(e: MouseEvent) {
         const { project } = this.props
+        if (!confirm(`プロジェクト "${project.name}" を削除してもよろしいですか？\nこの操作は取り消せません。`)) {
+            return
+        }
         this.props.onRemoveProject(project)
     }
 
     delegateRemoveItem(item: ProjectItem) {
         const { project } = this.props
+        if (item.children.length > 0 && !confirm(`タスク "${item.name}" を削除するとその全てのサブタスクも削除されます。よろしいですか？\nこの操作は取り消せません。`)) {
+            return
+        }
         this.props.onRemoveProjectItem(project, item)
     }
 
