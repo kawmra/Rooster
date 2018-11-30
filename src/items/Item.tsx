@@ -117,6 +117,11 @@ export default class extends React.Component<Props, State> {
         this.props.onCheckedChanged(item, checked)
     }
 
+    giveHTMLATag(name: string) {
+        const reg = new RegExp("((https?)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))")
+        return name.replace(reg, "<a href='$1' target='_blank'>$1</a>");
+    }
+
     render() {
         const { item } = this.props
         const checkbox = item.completed !== undefined
@@ -147,12 +152,14 @@ export default class extends React.Component<Props, State> {
         const controllerStyle = {
             display: this.state.hovered ? 'inline' : 'none'
         }
+        const name = this.giveHTMLATag(item.name) || "[NO Name]"
+        const renderName = name === "[NO Name]"? name: <span dangerouslySetInnerHTML={{__html: name }} />
         return (
             <li className="item" style={style}>
                 <p onMouseEnter={() => { this.setState({ hovered: true }) }}
                     onMouseLeave={() => { this.setState({ hovered: false }) }}>
                     {checkbox}
-                    {item.name || "[No Name]"}
+                    {renderName}
                     <span style={controllerStyle}>
                         <button onClick={this.handleAddSubItem.bind(this)}>+</button>
                         <button onClick={this.handleRemoveItem.bind(this)}>-</button>
