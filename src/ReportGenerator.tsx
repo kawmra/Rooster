@@ -91,8 +91,13 @@ function generateItemsMarkdown(items: ProjectItem[], nest: number = 0): string[]
             ? ' [' + (completed ? 'x' : ' ') + ']'
             : ''
         const childrenMd = generateItemsMarkdown(children, nest + 1)
-        return `${indent}-${checkbox} ${name || '[No Name]'}${childrenMd.length > 0 ? "\n" + childrenMd.join("\n") : ''}`
+        return `${indent}-${checkbox} ${giveMarkdownLink(name) || '[No Name]'}${childrenMd.length > 0 ? "\n" + childrenMd.join("\n") : ''}`
     })
+}
+
+function giveMarkdownLink(name: string) {
+    const reg = new RegExp("((https?)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))")
+    return name.replace(reg, `[$1]($1)`);
 }
 
 function hmStrToS(hm: string): number {
