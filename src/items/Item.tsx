@@ -153,7 +153,7 @@ export default class extends React.Component<Props, State> {
             display: this.state.hovered ? 'inline' : 'none'
         }
         const name = this.giveHTMLATag(item.name) || "[NO Name]"
-        const renderName = name === "[NO Name]"? name: <span dangerouslySetInnerHTML={{__html: name }} />
+        const renderName = name === "[No Name]"? name: <span dangerouslySetInnerHTML={{__html: name }} />
         return (
             <li className="item" style={style}>
                 <p onMouseEnter={() => { this.setState({ hovered: true }) }}
