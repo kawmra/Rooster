@@ -96,8 +96,13 @@ function generateItemsMarkdown(items: ProjectItem[], nest: number = 0): string[]
 }
 
 function addMarkdownLink(name: string) {
-    const reg = new RegExp("((https?)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))")
-    return name.replace(reg, `[$1]($1)`);
+    const markdownReg = new RegExp("\[(.*)\]\(https?(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))")
+    const result = name.match(markdownReg)
+    if(result !== null) { 
+        return name
+    }
+    const urlReg = new RegExp("((https?)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))")
+    return name.replace(urlReg, `[$1]($1)`);
 }
 
 function hmStrToS(hm: string): number {
