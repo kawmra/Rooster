@@ -91,8 +91,18 @@ function generateItemsMarkdown(items: ProjectItem[], nest: number = 0): string[]
             ? ' [' + (completed ? 'x' : ' ') + ']'
             : ''
         const childrenMd = generateItemsMarkdown(children, nest + 1)
-        return `${indent}-${checkbox} ${name || '[No Name]'}${childrenMd.length > 0 ? "\n" + childrenMd.join("\n") : ''}`
+        return `${indent}-${checkbox} ${addMarkdownLink(name) || '[No Name]'}${childrenMd.length > 0 ? "\n" + childrenMd.join("\n") : ''}`
     })
+}
+
+function addMarkdownLink(name: string) {
+    const markdownReg = new RegExp("\[(.*)\]\(https?(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))")
+    const result = name.match(markdownReg)
+    if(result !== null) { 
+        return name
+    }
+    const urlReg = new RegExp("((https?)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))")
+    return name.replace(urlReg, `[$1]($1)`);
 }
 
 function hmStrToS(hm: string): number {
