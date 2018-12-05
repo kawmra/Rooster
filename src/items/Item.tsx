@@ -152,7 +152,7 @@ export default class extends React.Component<Props, State> {
         const controllerStyle = {
             display: this.state.hovered ? 'inline' : 'none'
         }
-        const name = this.giveHTMLATag(item.name) || "[NO Name]"
+        const name = this.giveHTMLATag(item.name) || "[No Name]"
         const renderName = name === "[No Name]"? name: <span dangerouslySetInnerHTML={{__html: name }} />
         return (
             <li className="item" style={style}>
